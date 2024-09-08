@@ -10,10 +10,12 @@ const Home = () => {
   const handleFileUpload = (file: File) => {
     setPdfFile(file);
     const fileUrl = URL.createObjectURL(file);
+    return fileUrl;
   };
 
   const handlePdfUpdate = (updatedFile: Blob) => {
     const updatedUrl = URL.createObjectURL(updatedFile);
+    return updatedUrl;
   };
   return (
     <div className=" lg:p-6 xl:p-10 p-2  ">

@@ -1,5 +1,6 @@
 import { rgb } from "pdf-lib";
 
+
 // Convert hex color string to RGB format
 export const hexToRgb = (hex: string) => {
     let r: number = 0,

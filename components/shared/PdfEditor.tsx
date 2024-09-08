@@ -9,6 +9,7 @@ import { hexToRgb, simulateBlurColor } from "@/lib/helperFunction";
 import PdfViewer from "./PdfViewer";
 import { RxCross2 } from "react-icons/rx";
 import { MdBlurOn } from "react-icons/md";
+import Error from "next/error";
 
 const PdfEditor = ({
   file,
@@ -136,7 +137,7 @@ const PdfEditor = ({
     const pageHeight = firstPage.getHeight();
 
     // Iterate over each text area and add text based on percentage coordinates
-    textAreas.forEach(({ x, y, text, rotation, color, size }) => {
+    textAreas.forEach(({ x, y, text, rotation, color }) => {
       const offSetWidth = viewerRef.current?.offsetWidth as number;
       const offSetHeight = viewerRef.current?.offsetHeight as number;
       const absoluteX = (x / offSetWidth) * pageWidth;
@@ -314,8 +315,8 @@ const PdfEditor = ({
 
       // Clean up the object URL
       URL.revokeObjectURL(downloadLink.href);
-    } catch (err: any) {
-      console.log("Error in downloading the pdf: " + err.message);
+    } catch (err) {
+      console.log("Error in downloading the pdf: " + err);
     }
   };
   console.log(textAreas, eraseAreas);

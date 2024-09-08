@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
-import { FiUploadCloud } from "react-icons/fi"; // React icon for the upload button
-import { AiFillFilePdf } from "react-icons/ai"; // React icon for the uploaded file
-import { Button } from "../ui/button"; // Assuming you're using a Button component
+import { FiUploadCloud } from "react-icons/fi";
 
 const PdfUploader = ({
   onFileUpload,
