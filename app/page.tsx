@@ -21,7 +21,7 @@ const Home = () => {
   return (
     <div className=" lg:p-6 xl:p-10 p-2  ">
       <h1 className="text-2xl font-bold mb-4">PDF Editor</h1>
-      <div className="min-h-screen bg-neutral-800/60 rounded-lg p-2">
+      <div className="min-h-screen bg-neutral-800/60 rounded-lg p-2 flex flex-col gap-2  ">
         <PdfUploader onFileUpload={handleFileUpload} />
         {pdfFile && <PdfEditor file={pdfFile} onUpdate={handlePdfUpdate} />}
       </div>
