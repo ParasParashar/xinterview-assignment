@@ -23,13 +23,13 @@ const PdfUploader = ({
     <div className="flex flex-col items-center justify-center  bg-neutral-800/60  rounded-lg shadow-md">
       {!selectedFile && (
         <div className="flex flex-col items-center gap-4 p-8">
-          <FiUploadCloud size={48} className="text-blue-3 00" />
-          <h2 className="text-lg font-semibold text-gray-300">
+          <FiUploadCloud size={48} className="text-blue-300" />
+          <h2 className="text-lg font-semibold text-blue-300">
             Upload your PDF file
           </h2>
           <label
             htmlFor="file-upload"
-            className="cursor-pointer bg-blue-300 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
           >
             <FiUploadCloud size={20} />
             Choose File

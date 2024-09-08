@@ -152,23 +152,26 @@ const PdfEditor = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="flex   flex-col gap-3 md:gap-10 w-full h-full items-start   gap-x-3  p-3">
-        <div className="flex  items-center gap-x-4 w-full justify-between ">
+      <div className="flex flex-col gap-4 md:gap-8 w-full h-full items-start p-4  bg-neutral-700/60 rounded-lg shadow-lg">
+        {/* Top button section */}
+        <div className="flex items-center gap-x-4 w-full justify-between">
           <Button
-            className="bg-blue-500 text-white px-4 py-2 mr-2 flex items-center"
+            className="bg-blue-600 text-white px-4 py-2 mr-2 flex items-center rounded-lg shadow hover:bg-blue-700 transition-colors"
             onClick={() => setEditingMode("add")}
           >
-            <BiPlus size={20} />
+            <BiPlus size={20} className="mr-2" />
             Add Text
           </Button>
+
           {textAreas.length > 0 && textAreas.some((area) => area.isEditing) && (
             <Button
-              className="bg-green-500 text-white "
+              className="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition-colors"
               onClick={handleAddText}
             >
               Apply Text Changes
             </Button>
           )}
+
           {textAreas.length > 0 &&
             textAreas.some((area) => area.text) &&
             textAreas.every((area) => !area.isEditing) &&
@@ -176,32 +179,38 @@ const PdfEditor = ({
               <Button
                 variant={"secondary"}
                 onClick={handleDownloadPdf}
-                className="text-lg"
+                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center shadow hover:bg-gray-300 transition-colors"
               >
-                <BiDownload size={20} /> Download
+                <BiDownload size={20} className="mr-2" />
+                Download PDF
               </Button>
             )}
         </div>
+
+        {/* Text addition controls */}
         {editingMode === "add" && (
-          <div className="flex  justify-between items-center w-full shadow-lg p-1 rounded-lg border-2 border-neutral-600  gap-x-2  ">
-            <div className="space-x-3">
-              <label htmlFor="color">Select color</label>
+          <div className="flex items-center justify-between w-full p-4 bg-gray-800/80 border-2 border-neutral-800 rounded-lg shadow-lg">
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="color" className="text-sm font-semibold">
+                Select Color
+              </label>
               <input
                 type="color"
                 id="color"
                 value={selectedColor}
-                className="rounded-full "
+                className="w-10 h-10 rounded-full border-2 border-neutral-400 cursor-pointer"
                 onChange={(e) => setSelectedColor(e.target.value)}
               />
             </div>
-            <div className="space-x-3">
-              <label htmlFor="size" className="block font-semibold">
+
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="size" className="text-sm font-semibold">
                 Text Size
               </label>
               <select
                 id="size"
                 value={selectedSize}
-                className="border rounded px-2 py-1   bg-neutral-800 "
+                className="w-24 px-2 py-1 border border-neutral-300 rounded-lg shadow bg-white text-neutral-700 focus:outline-none"
                 onChange={(e) => setSelectedSize(Number(e.target.value))}
               >
                 {Array.from({ length: 10 }, (_, i) => i * 3 + 10).map(
@@ -215,9 +224,11 @@ const PdfEditor = ({
             </div>
           </div>
         )}
+
+        {/* Text placement guide */}
         {editingMode === "add" && (
-          <div className="text-2xl md:text-3xl text-center w-full animate-pulse">
-            Select on a pdf where you have to add text
+          <div className="w-full text-xl md:text-2xl text-center text-gray-500 animate-pulse mt-4">
+            Click on the PDF to place your text
           </div>
         )}
       </div>
