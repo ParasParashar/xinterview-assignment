@@ -1,8 +1,6 @@
 "use client";
-// import PdfEditor from "@/components/shared/DemoEditor";
 import PdfEditor from "@/components/shared/PdfEditor";
 import PdfUploader from "@/components/shared/PdfUploader";
-import PdfViewer from "@/components/shared/PdfViewer";
 import { useState } from "react";
 
 const Home = () => {
@@ -26,8 +24,6 @@ const Home = () => {
       <div className="min-h-screen bg-neutral-800/60 rounded-lg p-2">
         <PdfUploader onFileUpload={handleFileUpload} />
         {pdfFile && <PdfEditor file={pdfFile} onUpdate={handlePdfUpdate} />}
-        {/* {pdfFile && <PdfEditor file={pdfFile} onUpdate={handlePdfUpdate} />} */}
-        {/* {pdfUrl && <PdfViewer fileUrl={pdfUrl} />} */}
       </div>
     </div>
   );

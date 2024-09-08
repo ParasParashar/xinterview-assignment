@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useCallback } from "react";
-import { degrees, PDFDocument, rgb } from "pdf-lib";
+import { degrees, PDFDocument } from "pdf-lib";
 import { SpecialZoomLevel, Viewer } from "@react-pdf-viewer/core";
 import { Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
