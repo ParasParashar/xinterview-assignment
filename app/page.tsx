@@ -6,19 +6,15 @@ import { useState } from "react";
 
 const Home = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   const handleFileUpload = (file: File) => {
     setPdfFile(file);
     const fileUrl = URL.createObjectURL(file);
-    setPdfUrl(fileUrl);
   };
 
   const handlePdfUpdate = (updatedFile: Blob) => {
     const updatedUrl = URL.createObjectURL(updatedFile);
-    setPdfUrl(updatedUrl);
   };
-  console.log(pdfUrl, "data of the pdf url");
   return (
     <div className=" lg:p-6 xl:p-10 p-2  ">
       <Header />
