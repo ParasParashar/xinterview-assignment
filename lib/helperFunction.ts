@@ -19,3 +19,20 @@ export const hexToRgb = (hex: string) => {
     }
     return rgb(r / 255, g / 255, b / 255);
 };
+
+function hexTo(hex: string) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+
+    return [r / 255, g / 255, b / 255];
+}
+
+export function simulateBlurColor(hex: string, factor: number) {
+    const [r, g, b] = hexTo(hex);
+    const R = r * factor;
+    const B = g * factor;
+    const C = b * factor;
+    return rgb(R, B, C)
+}
