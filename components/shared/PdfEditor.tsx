@@ -81,11 +81,10 @@ const PdfEditor = ({
 
     // Iterate over each text area and add text based on percentage coordinates
     textAreas.forEach(({ x, y, text, rotation, color, size }) => {
-      // @ts-ignore
-      const absoluteX = (x / viewerRef.current.offsetWidth) * pageWidth;
-
-      // @ts-ignore
-      const absoluteY = (y / viewerRef.current.offsetHeight) * pageHeight;
+      const offSetWidth = viewerRef.current?.offsetWidth as number;
+      const offSetHeight = viewerRef.current?.offsetHeight as number;
+      const absoluteX = (x / offSetWidth) * pageWidth;
+      const absoluteY = (y / offSetHeight) * pageHeight;
 
       // Add text to the PDF
       firstPage.drawText(text, {
