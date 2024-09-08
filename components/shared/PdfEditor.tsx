@@ -7,6 +7,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Button } from "../ui/button";
 import { BiPlus } from "react-icons/bi";
 import { FaArrowsRotate } from "react-icons/fa6";
+import { hexToRgb } from "@/lib/helperFunction";
 
 const PdfEditor = ({
   file,
@@ -31,26 +32,6 @@ const PdfEditor = ({
   const [selectedColor, setSelectedColor] = useState<string>("#000000"); // Default black
   const [selectedSize, setSelectedSize] = useState<number>(24);
   const viewerRef = useRef<HTMLDivElement | null>(null);
-
-  // Convert hex color string to RGB format
-  const hexToRgb = (hex: string) => {
-    let r: number = 0,
-      g: number = 0,
-      b: number = 0;
-    // 3 digits
-    if (hex.length === 4) {
-      r = parseInt(hex[1] + hex[1], 16);
-      g = parseInt(hex[2] + hex[2], 16);
-      b = parseInt(hex[3] + hex[3], 16);
-    }
-    // 6 digits
-    else if (hex.length === 7) {
-      r = parseInt(hex[1] + hex[2], 16);
-      g = parseInt(hex[3] + hex[4], 16);
-      b = parseInt(hex[5] + hex[6], 16);
-    }
-    return rgb(r / 255, g / 255, b / 255);
-  };
 
   const handlePdfClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -126,9 +107,9 @@ const PdfEditor = ({
   };
 
   return (
-    <div className="p-4">
+    <div className="md:p-5">
       <div className="flex items-start justify-between gap-x-3 bg-muted-foreground p-3">
-        <div>
+        <div className="flex  items-center ">
           <Button
             className="bg-blue-500 text-white px-4 py-2 mr-2 flex items-center"
             onClick={() => setEditingMode("add")}
@@ -136,9 +117,9 @@ const PdfEditor = ({
             <BiPlus size={20} />
             Add Text
           </Button>
-          {textAreas.length > 0 && (
+          {textAreas.length > 0 && textAreas.some((area) => area.isEditing) && (
             <Button
-              className="bg-green-500 text-white px-4 py-2 mt-2"
+              className="bg-green-500 text-white "
               onClick={handleAddText}
             >
               Apply Text Changes
@@ -153,6 +134,7 @@ const PdfEditor = ({
                 type="color"
                 id="color"
                 value={selectedColor}
+                className="rounded-full "
                 onChange={(e) => setSelectedColor(e.target.value)}
               />
             </div>
@@ -167,7 +149,6 @@ const PdfEditor = ({
                 <option value={16}>16</option>
                 <option value={24}>24</option>
                 <option value={32}>32</option>
-                {/* Add more size options as needed */}
               </select>
             </div>
           </div>
@@ -177,12 +158,12 @@ const PdfEditor = ({
       <div className="relative" ref={viewerRef} onClick={handlePdfClick}>
         <div className="h-screen">
           <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-            <div className="h-screen md:h-[500px]">
-              <Viewer
-                defaultScale={SpecialZoomLevel.PageFit}
-                fileUrl={URL.createObjectURL(file)}
-              />
-            </div>
+            {/* <div className="h-screen "> */}
+            <Viewer
+              defaultScale={SpecialZoomLevel.PageFit}
+              fileUrl={URL.createObjectURL(file)}
+            />
+            {/* </div> */}
           </Worker>
         </div>
         {/* Render text areas as input fields */}
