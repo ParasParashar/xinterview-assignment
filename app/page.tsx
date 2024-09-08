@@ -17,7 +17,7 @@ const Home = () => {
     const updatedUrl = URL.createObjectURL(updatedFile);
     setPdfUrl(updatedUrl);
   };
-
+  console.log(pdfUrl, "data of the pdf url");
   return (
     <div className=" lg:p-6 xl:p-10 p-2  ">
       <h1 className="text-2xl font-bold mb-4">PDF Editor</h1>
