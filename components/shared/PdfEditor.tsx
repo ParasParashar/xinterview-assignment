@@ -81,9 +81,9 @@ const PdfEditor = ({
 
     // Iterate over each text area and add text based on percentage coordinates
     textAreas.forEach(({ x, y, text, rotation, color, size }) => {
-      // @ts-ignore
+      // @ts-expect-error
       const absoluteX = (x / viewerRef.current.offsetWidth) * pageWidth;
-      // @ts-ignore
+      // @ts-expect-error
 
       const absoluteY = (y / viewerRef.current.offsetHeight) * pageHeight;
 
