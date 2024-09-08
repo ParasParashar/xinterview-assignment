@@ -1,28 +1,34 @@
 "use client";
+// import PdfEditor from "@/components/shared/DemoEditor";
 import PdfEditor from "@/components/shared/PdfEditor";
 import PdfUploader from "@/components/shared/PdfUploader";
 import PdfViewer from "@/components/shared/PdfViewer";
 import { useState } from "react";
 
 const Home = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<string>("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
-  const handleUpload = (file: File) => {
-    setFile(file);
-    setFileUrl(URL.createObjectURL(file));
+  const handleFileUpload = (file: File) => {
+    setPdfFile(file);
+    const fileUrl = URL.createObjectURL(file);
+    setPdfUrl(fileUrl);
+  };
+
+  const handlePdfUpdate = (updatedFile: Blob) => {
+    const updatedUrl = URL.createObjectURL(updatedFile);
+    setPdfUrl(updatedUrl);
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">PDF Editor</h1>
-      <PdfUploader onUpload={handleUpload} />
-      {fileUrl && (
-        <>
-          <PdfViewer fileUrl={fileUrl} />
-          <PdfEditor />
-        </>
-      )}
+      <div className="min-h-screen bg-neutral-800/60">
+        <PdfUploader onFileUpload={handleFileUpload} />
+        {pdfFile && <PdfEditor file={pdfFile} onUpdate={handlePdfUpdate} />}
+        {/* {pdfFile && <PdfEditor file={pdfFile} onUpdate={handlePdfUpdate} />} */}
+        {/* {pdfUrl && <PdfViewer fileUrl={pdfUrl} />} */}
+      </div>
     </div>
   );
 };

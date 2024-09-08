@@ -1,21 +1,25 @@
 "use client";
 import { useState } from "react";
 
-const PdfUploader = ({ onUpload }: { onUpload: (file: File) => void }) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      onUpload(e.target.files[0]);
+const PdfUploader = ({
+  onFileUpload,
+}: {
+  onFileUpload: (file: File) => void;
+}) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      onFileUpload(file);
     }
   };
 
   return (
     <div className="p-4">
-      <input
-        type="file"
-        accept="application/pdf"
-        onChange={handleFileChange}
-        className="p-2 border"
-      />
+      <input type="file" accept="application/pdf" onChange={handleFileChange} />
+      {selectedFile && <p className="mt-2">Uploaded: {selectedFile.name}</p>}
     </div>
   );
 };
