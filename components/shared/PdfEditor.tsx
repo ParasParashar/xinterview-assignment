@@ -31,7 +31,7 @@ const PdfEditor = ({
   >([]);
   const [selectedColor, setSelectedColor] = useState<string>("#000000");
   const [selectedSize, setSelectedSize] = useState<number>(24);
-  const viewerRef = useRef<HTMLDivElement | null>(null);
+  const viewerRef = useRef<HTMLDivElement | any>(null);
 
   const handlePdfClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -81,9 +81,7 @@ const PdfEditor = ({
 
     // Iterate over each text area and add text based on percentage coordinates
     textAreas.forEach(({ x, y, text, rotation, color, size }) => {
-      // @ts-expect-error
       const absoluteX = (x / viewerRef.current.offsetWidth) * pageWidth;
-      // @ts-expect-error
 
       const absoluteY = (y / viewerRef.current.offsetHeight) * pageHeight;
 
