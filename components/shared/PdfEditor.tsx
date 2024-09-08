@@ -9,7 +9,6 @@ import { hexToRgb, simulateBlurColor } from "@/lib/helperFunction";
 import PdfViewer from "./PdfViewer";
 import { RxCross2 } from "react-icons/rx";
 import { MdBlurOn } from "react-icons/md";
-import Error from "next/error";
 
 const PdfEditor = ({
   file,
