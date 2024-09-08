@@ -5,7 +5,7 @@ import { SpecialZoomLevel, Viewer } from "@react-pdf-viewer/core";
 import { Worker } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { Button } from "../ui/button";
-import { BiPlus } from "react-icons/bi";
+import { BiDownload, BiPlus } from "react-icons/bi";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { hexToRgb } from "@/lib/helperFunction";
 
@@ -25,11 +25,11 @@ const PdfEditor = ({
       text: string;
       isEditing: boolean;
       rotation: number;
-      color: string; // Color in RGB format
+      color: string;
       size: number;
     }[]
   >([]);
-  const [selectedColor, setSelectedColor] = useState<string>("#000000"); // Default black
+  const [selectedColor, setSelectedColor] = useState<string>("#000000");
   const [selectedSize, setSelectedSize] = useState<number>(24);
   const viewerRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,10 +50,10 @@ const PdfEditor = ({
             rotation: 0,
             color: selectedColor,
             size: selectedSize,
-          }, // Apply selected color and size
+          },
         ]);
-        setText(""); // Clear the input field after adding
-        setEditingMode(null); // Exit editing mode
+        setText("");
+        setEditingMode(null);
       }
     },
     [editingMode, text, textAreas, selectedColor, selectedSize]
@@ -75,20 +75,35 @@ const PdfEditor = ({
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
+    // Get page width and height
+    const pageWidth = firstPage.getWidth();
+    const pageHeight = firstPage.getHeight();
+
+    // Iterate over each text area and add text based on percentage coordinates
     textAreas.forEach(({ x, y, text, rotation, color, size }) => {
+      // @ts-ignore
+      const absoluteX = (x / viewerRef.current.offsetWidth) * pageWidth;
+      // @ts-ignore
+
+      const absoluteY = (y / viewerRef.current.offsetHeight) * pageHeight;
+
+      // Add text to the PDF
       firstPage.drawText(text, {
-        x,
-        y,
+        x: absoluteX,
+        y: pageHeight - absoluteY, // In PDF-lib, y=0 is at the bottom, so invert the y-coordinate
         size,
         color: hexToRgb(color),
         rotate: degrees(rotation),
       });
     });
 
+    // Save the modified PDF
     const pdfBytes = await pdfDoc.save();
     onUpdate(new Blob([pdfBytes], { type: "application/pdf" }));
+
     // Set all text areas to non-editing mode after saving
     setTextAreas((prev) => prev.map((area) => ({ ...area, isEditing: false })));
+    setEditingMode(null);
   };
 
   const handleRotateText = (index: number) => {
@@ -106,10 +121,40 @@ const PdfEditor = ({
     );
   };
 
+  const handleDownloadPdf = async (e: any) => {
+    e.preventDefault();
+    // Load the original PDF
+    const pdfDoc = await PDFDocument.load(await file.arrayBuffer());
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+
+    textAreas.forEach(({ x, y, text, rotation, color, size }) => {
+      firstPage.drawText(text, {
+        x,
+        y,
+        size,
+        color: hexToRgb(color),
+        rotate: degrees(rotation),
+      });
+    });
+
+    // Save the updated PDF and create a Blob
+    const pdfBytes = await pdfDoc.save();
+    const updatedPdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(updatedPdfBlob);
+    downloadLink.download = "updated_pdf.pdf";
+    downloadLink.click();
+
+    // Clean up the object URL
+    URL.revokeObjectURL(downloadLink.href);
+  };
+
   return (
-    <div className="md:p-5">
-      <div className="flex items-start justify-between gap-x-3 bg-muted-foreground p-3">
-        <div className="flex  items-center ">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="flex   flex-col gap-3 md:gap-10 w-full h-full items-start   gap-x-3  p-3">
+        <div className="flex  items-center gap-x-4 w-full justify-between ">
           <Button
             className="bg-blue-500 text-white px-4 py-2 mr-2 flex items-center"
             onClick={() => setEditingMode("add")}
@@ -125,10 +170,22 @@ const PdfEditor = ({
               Apply Text Changes
             </Button>
           )}
+          {textAreas.length > 0 &&
+            textAreas.some((area) => area.text) &&
+            textAreas.every((area) => !area.isEditing) &&
+            editingMode === null && (
+              <Button
+                variant={"secondary"}
+                onClick={handleDownloadPdf}
+                className="text-lg"
+              >
+                <BiDownload size={20} /> Download
+              </Button>
+            )}
         </div>
         {editingMode === "add" && (
-          <div className="flex gap-x-2">
-            <div>
+          <div className="flex  justify-between items-center w-full shadow-lg p-1 rounded-lg border-2 border-neutral-600  gap-x-2  ">
+            <div className="space-x-3">
               <label htmlFor="color">Select color</label>
               <input
                 type="color"
@@ -138,34 +195,43 @@ const PdfEditor = ({
                 onChange={(e) => setSelectedColor(e.target.value)}
               />
             </div>
-            <div>
-              <label htmlFor="size">Select text size</label>
+            <div className="space-x-3">
+              <label htmlFor="size" className="block font-semibold">
+                Text Size
+              </label>
               <select
                 id="size"
                 value={selectedSize}
+                className="border rounded px-2 py-1   bg-neutral-800 "
                 onChange={(e) => setSelectedSize(Number(e.target.value))}
               >
-                <option value={12}>12</option>
-                <option value={16}>16</option>
-                <option value={24}>24</option>
-                <option value={32}>32</option>
+                {Array.from({ length: 10 }, (_, i) => i * 3 + 10).map(
+                  (size) => (
+                    <option key={size} value={size}>
+                      {size}px
+                    </option>
+                  )
+                )}
               </select>
             </div>
+          </div>
+        )}
+        {editingMode === "add" && (
+          <div className="text-2xl md:text-3xl text-center w-full animate-pulse">
+            Select on a pdf where you have to add text
           </div>
         )}
       </div>
 
       <div className="relative" ref={viewerRef} onClick={handlePdfClick}>
-        <div className="h-screen">
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-            {/* <div className="h-screen "> */}
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+          <div className="h-screen ">
             <Viewer
               defaultScale={SpecialZoomLevel.PageFit}
               fileUrl={URL.createObjectURL(file)}
             />
-            {/* </div> */}
-          </Worker>
-        </div>
+          </div>
+        </Worker>
         {/* Render text areas as input fields */}
         {textAreas.map((area, index) => (
           <div
@@ -183,7 +249,7 @@ const PdfEditor = ({
             }}
           >
             {area.isEditing ? (
-              <div className="relative w-full h-full p-3 hover:border group group-hover:border-black">
+              <div className="relative w-full h-full hover:border group group-hover:border-black">
                 <textarea
                   value={area.text}
                   autoFocus
@@ -194,14 +260,14 @@ const PdfEditor = ({
                     color: area.color,
                     fontSize: `${area.size}px`,
                   }}
-                  className="resize-none overflow-hidden border-transparent group-hover:resize"
+                  className="resize-none overflow-hidden border-transparent "
                 />
                 <Button
                   size="icon"
                   onClick={() => handleRotateText(index)}
-                  className="rounded-full absolute bottom-0 left-0 hidden group-hover:block"
+                  className="rounded-full  hidden items-center justify-center absolute bottom-[-2]  size-8 left-1/2  group-hover:flex"
                 >
-                  <FaArrowsRotate />
+                  <FaArrowsRotate size={14} />
                 </Button>
               </div>
             ) : (
