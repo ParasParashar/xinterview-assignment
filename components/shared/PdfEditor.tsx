@@ -111,7 +111,7 @@ const PdfEditor = ({
   );
 
   const handleTextChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLTextAreaElement>,
     index: number,
     newText: string
   ) => {
@@ -202,10 +202,10 @@ const PdfEditor = ({
 
       firstPage.drawRectangle({
         x: absoluteX,
-        y: pageHeight - absoluteY - height, // Adjust y for rectangle height
+        y: pageHeight - absoluteY - height,
         width: (width / offSetWidth) * pageWidth,
         height: (height / offSetHeight) * pageHeight,
-        color: rgb(1, 1, 1), // White to "erase" content
+        color: rgb(1, 1, 1),
       });
     });
 
@@ -298,7 +298,7 @@ const PdfEditor = ({
           y: pageHeight - absoluteY - rectHeight,
           width: rectWidth,
           height: rectHeight,
-          color: type === "blur" ? blurColor : normalColor, // Set blur color conditionally
+          color: type === "blur" ? blurColor : normalColor,
         });
       });
 
@@ -318,7 +318,6 @@ const PdfEditor = ({
       console.log("Error in downloading the pdf: " + err);
     }
   };
-  console.log(textAreas, eraseAreas);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="flex flex-col gap-4 md:gap-8 w-full h-full items-start p-4  bg-neutral-700/60 rounded-lg shadow-lg">
